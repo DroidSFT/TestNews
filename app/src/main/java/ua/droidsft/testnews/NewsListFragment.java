@@ -1,9 +1,11 @@
 package ua.droidsft.testnews;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,16 +23,12 @@ import java.util.List;
 public class NewsListFragment extends Fragment {
 
     private RecyclerView mNewsRecyclerView;
+    private TextView mNoNewsTextView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private List<NewsItem> mItems = new ArrayList<>();
 
     public static NewsListFragment newInstance() {
         return new NewsListFragment();
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        updateItems(true);
     }
 
     @Nullable
@@ -38,10 +36,29 @@ public class NewsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fagment_list_news, container, false);
 
+        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateItems(false);
+            }
+        });
+
+        mSwipeRefreshLayout.setColorSchemeResources(
+                R.color.colorAccent,
+                R.color.colorPrimary,
+                R.color.colorPrimaryDark);
+
         mNewsRecyclerView = (RecyclerView) v.findViewById(R.id.news_list_recycler);
         mNewsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        setupAdapter();
+        mNoNewsTextView = (TextView) v.findViewById(R.id.no_news_text);
         return v;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        updateItems(true);
     }
 
     private void setupAdapter() {
@@ -100,6 +117,12 @@ public class NewsListFragment extends Fragment {
         new FetchNews(useCache).execute();
     }
 
+    private void updateViewsVisibility() {
+        boolean newsVisible = mItems.size() > 0;
+        mNewsRecyclerView.setVisibility(newsVisible ? View.VISIBLE : View.GONE);
+        mNoNewsTextView.setVisibility(newsVisible ? View.GONE : View.VISIBLE);
+    }
+
     private class FetchNews extends AsyncTask<Void, Void, List<NewsItem>> {
         boolean mUseCache;
 
@@ -114,12 +137,14 @@ public class NewsListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<NewsItem> newsItems) {
-                if (newsItems.size() > 0) {
-                    mItems = newsItems;
-                    setupAdapter();
-                } else {
-                    Toast.makeText(getActivity(), R.string.no_news, Toast.LENGTH_SHORT).show();
-                }
+            if (newsItems.size() > 0) {
+                mItems = newsItems;
+                setupAdapter();
+            } else {
+                Toast.makeText(getActivity(), R.string.no_news_toast, Toast.LENGTH_LONG).show();
+            }
+            mSwipeRefreshLayout.setRefreshing(false);
+            updateViewsVisibility();
         }
     }
 }

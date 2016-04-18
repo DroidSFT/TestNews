@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">TestNews</string>
-    <string name="no_news">Sorry, news service is unavailable.</string>
+    <string name="no_news_toast">Sorry, news service is unavailable.\nCheck your internet connection.</string>
+    <string name="no_news_text">Swipe down to load news.</string>
 </resources>

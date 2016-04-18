@@ -27,7 +27,7 @@ public class NewsFetcher {
     private static final String TAG = "NewsFetcher";
 
     private static final String RSS_URL =
-            "https://news.google.com.ua/news?cf=all&hl=ru&pz=1&ned=ru_ua&output=rss";
+            "https://news.google.com.ua/news?cf=all&hl=ru&pz=1&ned=ru_ua&output=rss&num=20";
 
     public List<NewsItem> fetchNews() {
         List<NewsItem> items = new ArrayList<>();
