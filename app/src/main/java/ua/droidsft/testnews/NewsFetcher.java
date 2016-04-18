@@ -60,12 +60,14 @@ public class NewsFetcher {
                         Element titleElement = (Element) entry.getElementsByTagName("title").item(0);
                         Element linkElement = (Element) entry.getElementsByTagName("link").item(0);
                         Element dateElement = (Element) entry.getElementsByTagName("pubDate").item(0);
+                        Element idElement = (Element) entry.getElementsByTagName("guid").item(0);
 
                         String title = titleElement.getFirstChild().getNodeValue();
                         String link = linkElement.getFirstChild().getNodeValue();
                         String date = dateElement.getFirstChild().getNodeValue();
+                        String id = idElement.getFirstChild().getNodeValue();
 
-                        NewsItem item = new NewsItem(title, link, date);
+                        NewsItem item = new NewsItem(title, link, date, id);
 
                         items.add(item);
                     }

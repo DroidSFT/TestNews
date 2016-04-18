@@ -7,11 +7,13 @@ public class NewsItem {
     private String mTitle;
     private String mLink;
     private String mDate;
+    private String mId;
 
-    public NewsItem(String title, String link, String date) {
+    public NewsItem(String title, String link, String date, String id) {
         mTitle = title;
         mLink = link;
         mDate = date;
+        mId = id;
     }
 
     public String getTitle() {
@@ -24,6 +26,10 @@ public class NewsItem {
 
     public String getDate() {
         return mDate;
+    }
+
+    public String getId() {
+        return mId;
     }
 
     public String getUrl() {

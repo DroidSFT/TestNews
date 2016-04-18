@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class NewsListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateItems();
+        updateItems(true);
     }
 
     @Nullable
@@ -95,21 +96,30 @@ public class NewsListFragment extends Fragment {
         }
     }
 
-    private void updateItems() {
-        new FetchNews().execute();
+    private void updateItems(boolean useCache) {
+        new FetchNews(useCache).execute();
     }
 
     private class FetchNews extends AsyncTask<Void, Void, List<NewsItem>> {
+        boolean mUseCache;
+
+        public FetchNews(boolean useCache) {
+            mUseCache = useCache;
+        }
 
         @Override
         protected List<NewsItem> doInBackground(Void... params) {
-            return new NewsFetcher().fetchNews();
+            return NewsLab.get(getActivity()).getNewsItems(mUseCache);
         }
 
         @Override
         protected void onPostExecute(List<NewsItem> newsItems) {
-            mItems = newsItems;
-            setupAdapter();
+                if (newsItems.size() > 0) {
+                    mItems = newsItems;
+                    setupAdapter();
+                } else {
+                    Toast.makeText(getActivity(), R.string.no_news, Toast.LENGTH_SHORT).show();
+                }
         }
     }
 }
