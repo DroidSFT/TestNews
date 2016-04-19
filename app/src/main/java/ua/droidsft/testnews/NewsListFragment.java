@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
+ * Fragment represents the list of news.
  * Created by Vlad on 18.04.2016.
  */
 public class NewsListFragment extends Fragment {
@@ -61,6 +62,7 @@ public class NewsListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        // Try to load news from cache DB (or from net id DB is empty)
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -142,12 +144,14 @@ public class NewsListFragment extends Fragment {
         new FetchNews(useCache).execute();
     }
 
+    // Hide info text and show news list if it is not empty
     private void updateViewsVisibility() {
         boolean newsVisible = mItems.size() > 0;
         mNewsRecyclerView.setVisibility(newsVisible ? View.VISIBLE : View.GONE);
         mNoNewsTextView.setVisibility(newsVisible ? View.GONE : View.VISIBLE);
     }
 
+    // AsyncTask for retrieving news in background thread
     private class FetchNews extends AsyncTask<Void, Void, List<NewsItem>> {
         boolean mUseCache;
 
@@ -165,6 +169,7 @@ public class NewsListFragment extends Fragment {
             if (newsItems.size() > 0) {
                 mItems = newsItems;
 
+                // Sort news items from the newest to the oldest
                 Collections.sort(mItems, new Comparator<NewsItem>() {
                     @Override
                     public int compare(NewsItem item1, NewsItem item2) {

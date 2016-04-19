@@ -9,6 +9,7 @@ import ua.droidsft.testnews.NewsItem;
 import ua.droidsft.testnews.database.NewsDbSchema.NewsTable;
 
 /**
+ * CursorWrapper for operations with cache DB items
  * Created by Vlad on 18.04.2016.
  */
 public class NewsCursorWrapper extends CursorWrapper {

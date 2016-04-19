@@ -15,6 +15,7 @@ import ua.droidsft.testnews.database.NewsCursorWrapper;
 import ua.droidsft.testnews.database.NewsDbSchema.NewsTable;
 
 /**
+ * Class handles access to news items (retrieves items from cache DB or from net).
  * Created by Vlad on 18.04.2016.
  */
 public class NewsLab {
@@ -35,8 +36,10 @@ public class NewsLab {
         return sNewsLab;
     }
 
+    // Returns List of news items from cache DB or from net
     public List<NewsItem> getNewsItems(boolean useCache) {
         if (useCache) {
+            // Check if cache DB is not empty and try to get news from net if so
             Cursor cursor = mDatabase.rawQuery("select count(*) from " + NewsTable.NAME, null);
             cursor.moveToFirst();
             int itemsInDb = cursor.getInt(0);
@@ -52,15 +55,16 @@ public class NewsLab {
         }
     }
 
-    public void addNewsItemToDb(NewsItem item) {
+    private void addNewsItemToDb(NewsItem item) {
         ContentValues values = getContentValues(item);
         mDatabase.insert(NewsTable.NAME, null, values);
     }
 
-    public List<NewsItem> getNewsItemsFromDb() {
+    private List<NewsItem> getNewsItemsFromDb() {
         List<NewsItem> items = new ArrayList<>();
         NewsCursorWrapper cursorWrapper = queryNews(null, null);
 
+        //noinspection TryFinallyCanBeTryWithResources
         try {
             cursorWrapper.moveToFirst();
             while (!cursorWrapper.isAfterLast()) {
@@ -74,7 +78,7 @@ public class NewsLab {
         return items;
     }
 
-    public List<NewsItem> getNewsItemsFromNet() {
+    private List<NewsItem> getNewsItemsFromNet() {
         List<NewsItem> items = new NewsFetcher().fetchNews();
         if (items.size() > 0) {
             clearDb();
@@ -86,7 +90,7 @@ public class NewsLab {
         return items;
     }
 
-    public void clearDb() {
+    private void clearDb() {
         mDatabase.execSQL("delete from " + NewsTable.NAME);
         mDatabase.execSQL("vacuum");
     }

@@ -25,11 +25,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 /**
+ * Fetcher for getting and parsing news from RSS feed.
  * Created by Vlad on 18.04.2016.
  */
 public class NewsFetcher {
     private static final String TAG = "NewsFetcher";
 
+    // Number of news items is adjustable by adding &num=XX to Google News RSS URL
     private static final String RSS_URL =
             "https://news.google.com.ua/news?cf=all&hl=ru&pz=1&ned=ru_ua&output=rss&num=20";
 
@@ -50,6 +52,7 @@ public class NewsFetcher {
 
             int responseCode = httpConnection.getResponseCode();
 
+            // Try to parse news items
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 Log.i(TAG, "fetchNews: HTTP_OK");
 
@@ -78,7 +81,7 @@ public class NewsFetcher {
                         String id = idElement.getFirstChild().getNodeValue();
 
                         SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
-                        Date date = new Date();
+                        Date date = new Date(); // Current date/time will be used if date parsing fails
                         try {
                             date = sdf.parse(dateString);
                         } catch (ParseException e) {

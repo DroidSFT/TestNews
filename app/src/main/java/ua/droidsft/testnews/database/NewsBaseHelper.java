@@ -7,11 +7,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import ua.droidsft.testnews.database.NewsDbSchema.NewsTable;
 
 /**
+ * SQLiteOpenHelper class for cache DB.
  * Created by Vlad on 18.04.2016.
  */
 public class NewsBaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
-    public static final String DATABASE_NAME = "newsBase.db";
+    private static final String DATABASE_NAME = "newsBase.db";
 
     public NewsBaseHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);

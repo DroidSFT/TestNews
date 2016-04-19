@@ -18,6 +18,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 /**
+ * Fragment shows the source website of selected news item.
  * Created by Vlad on 19.04.2016.
  */
 public class NewsPageFragment extends Fragment {
@@ -44,6 +45,7 @@ public class NewsPageFragment extends Fragment {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         ActionBar actionBar = activity.getSupportActionBar();
 
+        // Use source site as actionbar title
         String title = mUri.toString().split("/")[2];
 
         if (actionBar != null) {
@@ -62,11 +64,12 @@ public class NewsPageFragment extends Fragment {
         mWebView = (WebView) v.findViewById(R.id.news_page_web_view);
 
         WebSettings settings = mWebView.getSettings();
-        settings.setJavaScriptEnabled(true);
+        settings.setJavaScriptEnabled(true); // Needed to be able to open some sites
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
 
         mWebView.setWebChromeClient(new WebChromeClient() {
+            // Show site loading progress bar and hide it when loading finish
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 if (newProgress == 100) {
@@ -77,6 +80,7 @@ public class NewsPageFragment extends Fragment {
                 }
             }
 
+            // Use news page title as actionbar subtitle
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -86,6 +90,7 @@ public class NewsPageFragment extends Fragment {
             }
         });
 
+        // Handle non http(s) links by allowing user to choose an app for it
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

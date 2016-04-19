@@ -9,10 +9,12 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 
 /**
+ * Activity for NewsPageFragment
  * Created by Vlad on 19.04.2016.
  */
 public class NewsPageActivity extends SingleFragmentActivity {
 
+    // Construct intent for news page
     public static Intent newIntent(Context context, Uri newsPageUri) {
         Intent intent = new Intent(context, NewsPageActivity.class);
         intent.setData(newsPageUri);
@@ -24,6 +26,7 @@ public class NewsPageActivity extends SingleFragmentActivity {
         return NewsPageFragment.newInstance(getIntent().getData());
     }
 
+    // Handle action bar home button
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -33,6 +36,7 @@ public class NewsPageActivity extends SingleFragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Allow to navigate back in NewsPageFragment's WebView
     @Override
     public void onBackPressed() {
         NewsPageFragment fragment = (NewsPageFragment) getSupportFragmentManager()

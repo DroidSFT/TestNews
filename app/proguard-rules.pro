@@ -15,3 +15,19 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keepclassmembers class **.R$* {public static <fields>;}
+-keep class **.R$*
+
+-assumenosideeffects class android.util.Log {
+    public static int v(...);
+    public static int i(...);
+    public static int w(...);
+    public static int d(...);
+    public static int e(...);
+}
+
+-dontwarn android.support.**
+-keep class android.support.** { *; }
+-keep interface android.support.** { *; }
+

@@ -5,6 +5,7 @@ import android.net.Uri;
 import java.util.Date;
 
 /**
+ * Model of item of news
  * Created by Vlad on 18.04.2016.
  */
 public class NewsItem {
@@ -36,6 +37,7 @@ public class NewsItem {
         return mId;
     }
 
+    // Returns the news item's source Uri by splitting link field
     public Uri getPageUri() {
         String[] linkSplit = mLink.split("url=");
         return Uri.parse(linkSplit[linkSplit.length - 1]);

@@ -1,6 +1,7 @@
 package ua.droidsft.testnews.database;
 
 /**
+ * Class represents the schema of cache DB
  * Created by Vlad on 18.04.2016.
  */
 public class NewsDbSchema {
