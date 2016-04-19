@@ -1,5 +1,7 @@
 package ua.droidsft.testnews;
 
+import android.net.Uri;
+
 /**
  * Created by Vlad on 18.04.2016.
  */
@@ -32,9 +34,9 @@ public class NewsItem {
         return mId;
     }
 
-    public String getUrl() {
-        //TODO: parse link and return url
-        return null;
+    public Uri getPageUri() {
+        String[] linkSplit = mLink.split("url=");
+        return Uri.parse(linkSplit[linkSplit.length - 1]);
     }
 
 }

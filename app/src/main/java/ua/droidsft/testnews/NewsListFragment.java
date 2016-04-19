@@ -1,6 +1,6 @@
 package ua.droidsft.testnews;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,11 +21,11 @@ import java.util.List;
  * Created by Vlad on 18.04.2016.
  */
 public class NewsListFragment extends Fragment {
-
     private RecyclerView mNewsRecyclerView;
     private TextView mNoNewsTextView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private List<NewsItem> mItems = new ArrayList<>();
+    private NewsAdapter mAdapter;
 
     public static NewsListFragment newInstance() {
         return new NewsListFragment();
@@ -56,19 +56,30 @@ public class NewsListFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        updateItems(true);
+    public void onStart() {
+        super.onStart();
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                updateItems(true);
+            }
+        });
     }
 
     private void setupAdapter() {
         if (isAdded()) {
-            mNewsRecyclerView.setAdapter(new NewsAdapter(mItems));
+            if (mAdapter == null) {
+                mAdapter = new NewsAdapter(mItems);
+                mNewsRecyclerView.setAdapter(mAdapter);
+            } else {
+                mAdapter.setNews(mItems);
+                mAdapter.notifyDataSetChanged();
+            }
         }
-
     }
 
-    private class NewsHolder extends RecyclerView.ViewHolder {
+    private class NewsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mTitleTextView;
         private TextView mDateTextView;
         private NewsItem mNewsItem;
@@ -77,6 +88,7 @@ public class NewsListFragment extends Fragment {
             super(itemView);
             mTitleTextView = (TextView) itemView.findViewById(R.id.item_title_text);
             mDateTextView = (TextView) itemView.findViewById(R.id.item_subtitle_text);
+            itemView.setOnClickListener(this);
         }
 
         public void bindNewsItem(NewsItem newsItem) {
@@ -85,6 +97,11 @@ public class NewsListFragment extends Fragment {
             mDateTextView.setText(mNewsItem.getDate());
         }
 
+        @Override
+        public void onClick(View v) {
+            Intent i = NewsPageActivity.newIntent(getActivity(), mNewsItem.getPageUri());
+            startActivity(i);
+        }
     }
 
     private class NewsAdapter extends RecyclerView.Adapter<NewsHolder> {
@@ -105,6 +122,10 @@ public class NewsListFragment extends Fragment {
         public void onBindViewHolder(NewsHolder holder, int position) {
             NewsItem item = mNewsItems.get(position);
             holder.bindNewsItem(item);
+        }
+
+        public void setNews(List<NewsItem> news) {
+            mNewsItems = news;
         }
 
         @Override

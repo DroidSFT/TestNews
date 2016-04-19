@@ -29,6 +29,8 @@ public class NewsFetcher {
     private static final String RSS_URL =
             "https://news.google.com.ua/news?cf=all&hl=ru&pz=1&ned=ru_ua&output=rss&num=20";
 
+    private static final int TIMEOUT = 15000;
+
     public List<NewsItem> fetchNews() {
         List<NewsItem> items = new ArrayList<>();
 
@@ -37,6 +39,9 @@ public class NewsFetcher {
             url = new URL(RSS_URL);
 
             URLConnection connection = url.openConnection();
+            connection.setConnectTimeout(TIMEOUT);
+            connection.setReadTimeout(TIMEOUT);
+
             HttpURLConnection httpConnection = (HttpURLConnection) connection;
 
             int responseCode = httpConnection.getResponseCode();
@@ -50,6 +55,7 @@ public class NewsFetcher {
                 DocumentBuilder db = dbf.newDocumentBuilder();
 
                 Document dom = db.parse(in);
+
                 Element docElement = dom.getDocumentElement();
 
                 NodeList nl = docElement.getElementsByTagName("item");

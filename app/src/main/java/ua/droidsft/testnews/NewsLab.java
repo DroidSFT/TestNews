@@ -82,6 +82,7 @@ public class NewsLab {
                 addNewsItemToDb(item);
             }
         }
+
         return items;
     }
 
