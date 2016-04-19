@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -43,8 +44,7 @@ public class NewsPageFragment extends Fragment {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         ActionBar actionBar = activity.getSupportActionBar();
 
-        String[] uriSplit = mUri.toString().split("/");
-        String title = uriSplit[2];
+        String title = mUri.toString().split("/")[2];
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -60,7 +60,11 @@ public class NewsPageFragment extends Fragment {
         mProgressBar = (ProgressBar) v.findViewById(R.id.news_page_progressbar);
         mProgressBar.setMax(100);
         mWebView = (WebView) v.findViewById(R.id.news_page_web_view);
-        mWebView.getSettings().setJavaScriptEnabled(true);
+
+        WebSettings settings = mWebView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(false);
 
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override

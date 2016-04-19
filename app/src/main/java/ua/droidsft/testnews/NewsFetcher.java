@@ -13,8 +13,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -70,8 +74,16 @@ public class NewsFetcher {
 
                         String title = titleElement.getFirstChild().getNodeValue();
                         String link = linkElement.getFirstChild().getNodeValue();
-                        String date = dateElement.getFirstChild().getNodeValue();
+                        String dateString = dateElement.getFirstChild().getNodeValue();
                         String id = idElement.getFirstChild().getNodeValue();
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
+                        Date date = new Date();
+                        try {
+                            date = sdf.parse(dateString);
+                        } catch (ParseException e) {
+                            Log.d(TAG, "fetchNews: ParseException while parsing date, current date will be used");
+                        }
 
                         NewsItem item = new NewsItem(title, link, date, id);
 
@@ -80,17 +92,13 @@ public class NewsFetcher {
                 }
             }
         } catch (MalformedURLException e) {
-            Log.d(TAG, "fetchNews: MalformedURLException");
-            e.printStackTrace();
+            Log.e(TAG, "fetchNews: MalformedURLException", e);
         } catch (IOException e) {
-            Log.d(TAG, "fetchNews: IOException");
-            e.printStackTrace();
+            Log.e(TAG, "fetchNews: IOException", e);
         } catch (ParserConfigurationException e) {
-            Log.d(TAG, "fetchNews: ParserConfigurationException");
-            e.printStackTrace();
+            Log.e(TAG, "fetchNews: ParserConfigurationException", e);
         } catch (SAXException e) {
-            Log.d(TAG, "fetchNews: SAXException");
-            e.printStackTrace();
+            Log.e(TAG, "fetchNews: SAXException", e);
         }
 
         return items;

@@ -95,7 +95,7 @@ public class NewsLab {
         ContentValues values = new ContentValues();
         values.put(NewsTable.Cols.ID, item.getId());
         values.put(NewsTable.Cols.TITLE, item.getTitle());
-        values.put(NewsTable.Cols.DATE, item.getDate());
+        values.put(NewsTable.Cols.DATE, item.getDate().getTime());
         values.put(NewsTable.Cols.LINK, item.getLink());
         return values;
     }

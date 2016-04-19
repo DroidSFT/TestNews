@@ -2,16 +2,18 @@ package ua.droidsft.testnews;
 
 import android.net.Uri;
 
+import java.util.Date;
+
 /**
  * Created by Vlad on 18.04.2016.
  */
 public class NewsItem {
     private String mTitle;
     private String mLink;
-    private String mDate;
+    private Date mDate;
     private String mId;
 
-    public NewsItem(String title, String link, String date, String id) {
+    public NewsItem(String title, String link, Date date, String id) {
         mTitle = title;
         mLink = link;
         mDate = date;
@@ -26,7 +28,7 @@ public class NewsItem {
         return mLink;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return mDate;
     }
 

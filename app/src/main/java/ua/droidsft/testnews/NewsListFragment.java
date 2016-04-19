@@ -14,7 +14,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -94,7 +97,8 @@ public class NewsListFragment extends Fragment {
         public void bindNewsItem(NewsItem newsItem) {
             mNewsItem = newsItem;
             mTitleTextView.setText(mNewsItem.getTitle());
-            mDateTextView.setText(mNewsItem.getDate());
+            DateFormat sdf = DateFormat.getDateTimeInstance();
+            mDateTextView.setText(sdf.format(mNewsItem.getDate()));
         }
 
         @Override
@@ -160,6 +164,14 @@ public class NewsListFragment extends Fragment {
         protected void onPostExecute(List<NewsItem> newsItems) {
             if (newsItems.size() > 0) {
                 mItems = newsItems;
+
+                Collections.sort(mItems, new Comparator<NewsItem>() {
+                    @Override
+                    public int compare(NewsItem item1, NewsItem item2) {
+                        return item2.getDate().compareTo(item1.getDate());
+                    }
+                });
+
                 setupAdapter();
             } else {
                 Toast.makeText(getActivity(), R.string.no_news_toast, Toast.LENGTH_LONG).show();
