@@ -62,7 +62,7 @@ public class NewsListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        // Try to load news from cache DB (or from net id DB is empty)
+        // Try to load news from cache DB (or from net if DB is empty)
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {

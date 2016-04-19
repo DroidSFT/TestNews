@@ -1,3 +1,21 @@
+Task
+
+Create News app, which will be able to load news titles from RSS-feed https://news.google.com.ua/
+and display them in the list. Each list item should contain title and date. The list should be
+sorted by date field from newest to oldest. Data must be cached on the device. Data has to be
+updated after Update gesture (pull-to-refresh). Click on list item should navigate to details
+screen which displays its content from source URL of the item. No need to pay much attention to
+design, but the clear and clean interface is mandatory. You are welcome to use customary tools &
+frameworks for your implementation.
+
+
 Техническое задание
 
-Создать приложение "Новости", которое будет загружать из RSS-ленты https://news.google.com.ua/ заголовки новостей и показывать их в виде списка. В каждом элементе списка должен отображаться заголовок новости и дата. Список должен быть отсортирован по дате от новых к старым. Полученные данные должны кешироваться на клиенте. Данные должны обновляться после оттягивания (pull-to-refresh). При нажатии на каждую новость, она должна открывать новый экран и показывать содержимое из url источника новости. Уделять много внимания дизайну не стоит, но чистый аккуратный интерфейс обязателен. При реализации можно пользоваться любыми привычными инструментами/библиотеками.
+Создать приложение "Новости", которое будет загружать из RSS-ленты https://news.google.com.ua/
+заголовки новостей и показывать их в виде списка. В каждом элементе списка должен отображаться
+заголовок новости и дата. Список должен быть отсортирован по дате от новых к старым. Полученные
+данные должны кешироваться на клиенте. Данные должны обновляться после оттягивания
+(pull-to-refresh). При нажатии на каждую новость, она должна открывать новый экран и показывать
+содержимое из URL источника новости. Уделять много внимания дизайну не стоит, но чистый
+аккуратный интерфейс обязателен. При реализации можно пользоваться любыми привычными
+инструментами/библиотеками.
