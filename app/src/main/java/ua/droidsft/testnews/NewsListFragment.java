@@ -35,6 +35,12 @@ public class NewsListFragment extends Fragment {
         return new NewsListFragment();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true); // No need to re-create fragment on rotates, etc.
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,31 +62,44 @@ public class NewsListFragment extends Fragment {
         mNewsRecyclerView = (RecyclerView) v.findViewById(R.id.news_list_recycler);
         mNewsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mNoNewsTextView = (TextView) v.findViewById(R.id.no_news_text);
+        // Setup adapter immediately if already got items (ex. after rotate).
+        if (!mItems.isEmpty()) {
+            setupAdapter();
+        }
+
         return v;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        // Try to load news from cache DB (or from net if DB is empty)
-        mSwipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(true);
-                updateItems(true);
-            }
-        });
+        // If have not got any items (ex. first launch),
+        // try to load news from cache DB (or from net if DB is empty).
+        if (mItems.isEmpty()) {
+            mSwipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeRefreshLayout.setRefreshing(true);
+                    updateItems(true);
+                }
+            });
+        }
     }
 
     private void setupAdapter() {
-        if (isAdded()) {
+        if (isAdded()) { // No need to setup adapter if fragment is not added
             if (mAdapter == null) {
                 mAdapter = new NewsAdapter(mItems);
                 mNewsRecyclerView.setAdapter(mAdapter);
             } else {
                 mAdapter.setNews(mItems);
                 mAdapter.notifyDataSetChanged();
+                if (mNewsRecyclerView.getAdapter() == null) {
+                    mNewsRecyclerView.setAdapter(mAdapter);
+                }
             }
+            mNewsRecyclerView.setVisibility(View.VISIBLE);
+            mNoNewsTextView.setVisibility(View.GONE);
         }
     }
 
@@ -144,14 +163,10 @@ public class NewsListFragment extends Fragment {
         new FetchNews(useCache).execute();
     }
 
-    // Hide info text and show news list if it is not empty
-    private void updateViewsVisibility() {
-        boolean newsVisible = mItems.size() > 0;
-        mNewsRecyclerView.setVisibility(newsVisible ? View.VISIBLE : View.GONE);
-        mNoNewsTextView.setVisibility(newsVisible ? View.GONE : View.VISIBLE);
-    }
-
-    // AsyncTask for retrieving news in background thread
+    // AsyncTask for retrieving news in background thread.
+    // As Fragment is retained during rotates, there will be no problems with using AsyncTask.
+    // In future, it can be replaced with another threading primitive,
+    // which will be more suitable for more complex tasks.
     private class FetchNews extends AsyncTask<Void, Void, List<NewsItem>> {
         boolean mUseCache;
 
@@ -161,28 +176,26 @@ public class NewsListFragment extends Fragment {
 
         @Override
         protected List<NewsItem> doInBackground(Void... params) {
-            return NewsLab.get(getActivity()).getNewsItems(mUseCache);
+            List<NewsItem> items = NewsLab.get(getActivity()).getNewsItems(mUseCache);
+            // Perform sorting in background thread
+            Collections.sort(items, new Comparator<NewsItem>() {
+                @Override
+                public int compare(NewsItem item1, NewsItem item2) {
+                    return item2.getDate().compareTo(item1.getDate());
+                }
+            });
+            return items;
         }
 
         @Override
         protected void onPostExecute(List<NewsItem> newsItems) {
-            if (newsItems.size() > 0) {
+            if (!newsItems.isEmpty()) {
                 mItems = newsItems;
-
-                // Sort news items from the newest to the oldest
-                Collections.sort(mItems, new Comparator<NewsItem>() {
-                    @Override
-                    public int compare(NewsItem item1, NewsItem item2) {
-                        return item2.getDate().compareTo(item1.getDate());
-                    }
-                });
-
                 setupAdapter();
             } else {
                 Toast.makeText(getActivity(), R.string.no_news_toast, Toast.LENGTH_LONG).show();
             }
             mSwipeRefreshLayout.setRefreshing(false);
-            updateViewsVisibility();
         }
     }
 }
